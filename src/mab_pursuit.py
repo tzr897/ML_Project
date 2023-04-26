@@ -38,6 +38,8 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             #####################################################
 
             # update the probability list
+            flag = True
+
             if t != 0:
                 P_MAX = 1 - (K - 1) * P_MIN
                 for i in range(K):
@@ -48,9 +50,14 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             else:
                 prob_list[pre_best_action_sa] = 1.0
 
+            cur_prob_sum = np.sum(prob_list)
+            if (abs(cur_prob_sum - 1.0)) > 1e-6:
+                flag = False
 
             # choose the action in this step
-            action_sa = np.random.choice(a = arm_list, p = prob_list)
+            action_sa = action_sa = np.random.randint(0, K)
+            if flag:
+                action_sa = np.random.choice(a = arm_list, p = prob_list)
             
             #####################################################
 

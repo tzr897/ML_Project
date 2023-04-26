@@ -45,11 +45,12 @@ def mab_prob_matching(P_MIN, BETA):
                     break
                 prob_list[i] = P_MIN + (1 - K * P_MIN) * (q_a_sa[i] / denominator)
 
+            cur_prob_sum = np.sum(prob_list)
+            if (abs(cur_prob_sum - 1.0)) > 1e-6:
+                flag = False
             # choose the action in this step
-            action_sa = 0
+            action_sa = np.random.randint(0, K)
             if flag:
-                action_sa = np.random.choice(a = arm_list, p = prob_list)
-            else:
                 action_sa = np.random.choice(a = arm_list, p = prob_list)
             #####################################################
 
