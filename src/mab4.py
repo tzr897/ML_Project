@@ -203,7 +203,6 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
         arm_list = np.array(arm_list)
 
         
-
         for t in range(EPISODES):
 
             # add the noise
@@ -218,6 +217,8 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             #####################################################
 
             # update the probability list
+            flag = True
+
             if t != 0:
                 P_MAX = 1 - (K - 1) * P_MIN
                 for i in range(K):
@@ -228,9 +229,14 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             else:
                 prob_list[pre_best_action_sa] = 1.0
 
+            cur_prob_sum = np.sum(prob_list)
+            if (abs(cur_prob_sum - 1.0)) > 1e-6:
+                flag = False
 
             # choose the action in this step
-            action_sa = np.random.choice(a = arm_list, p = prob_list)
+            action_sa = action_sa = np.random.randint(0, K)
+            if flag:
+                action_sa = np.random.choice(a = arm_list, p = prob_list)
             
             #####################################################
 
@@ -244,7 +250,13 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             if action_sa == best_action_sa:
                 best_action_freq_sa[r, t] = 1
             
-            pre_best_action_sa = best_action_sa
+            # greedy action of the previous step
+            list_max_sa = []
+            q_max_sa = np.max(q_a_sa)
+            for i in range(K):
+                if q_a_sa[i] == q_max_sa:
+                    list_max_sa.append(i)
+            pre_best_action_sa = np.random.choice(list_max_sa)
     
     # calculating
     ratio_o_t_sa = list(range(EPISODES))
@@ -256,6 +268,7 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
         ratio_o_t_sa[t] = float(sum_o_sa) / float(TIMES)
     
     return ratio_o_t_sa
+
 
 
 fig, ax = plt.subplots()

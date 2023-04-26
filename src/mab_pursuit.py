@@ -71,7 +71,13 @@ def mab_pursuit(P_MIN, BETA, ALPHA):
             if action_sa == best_action_sa:
                 best_action_freq_sa[r, t] = 1
             
-            pre_best_action_sa = best_action_sa
+            # greedy action of the previous step
+            list_max_sa = []
+            q_max_sa = np.max(q_a_sa)
+            for i in range(K):
+                if q_a_sa[i] == q_max_sa:
+                    list_max_sa.append(i)
+            pre_best_action_sa = np.random.choice(list_max_sa)
     
     # calculating
     ratio_o_t_sa = list(range(EPISODES))
